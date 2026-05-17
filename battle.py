@@ -1,4 +1,6 @@
 MAX_SLOT = 30
+from magic import magic_ui
+from battle_logic import *
 from data import * 
 from setting_ui import *
 import random
@@ -13,9 +15,11 @@ def battle(hero):
         boss_hit = boss_data[1] 
         money_range = boss_data[2]
         type_boss = boss_data[3]
+        boss_effect_type = "None"
+        boss_status_timer = 0
         boss_money = random.randint(money_range [0], money_range [1])
 
-        print("="*50)
+        print("="*58)
         print(f"Внимание! На вас напал {colorama.Fore.LIGHTRED_EX}{name}{S}")
         print(f"Его здоровье {boss_hp}, а сила удара {boss_hit}.")
         
@@ -23,7 +27,7 @@ def battle(hero):
             
             # ---  Действие  --- # 
             print(f"Ваше здоровье {hero['health']}/{hero['max_health']}, здоровье босса {boss_hp}.")
-            choise = input(f"{L50}\nВаши действия? 1 - Удар, 2 - Бегство, 3 - Выход \n{L50}\nВаш выбор (1/2/3): ").lower().strip()
+            choise = input(f"{L58}\nВаши действия? 1 - Удар, 2 - Бегство, 3 - Магия, 4 - Выход \n{L58}\nВаш выбор (1/2/3): ").lower().strip()
             if choise == "1" or choise == "удар":
                 hit_hero = random.randint(hero['min_damage'], hero['max_damage']) #--- Рассчитываем урон героя ---#
                 crit_hero = random.randint(1,100)
@@ -35,71 +39,71 @@ def battle(hero):
                     crit_hero = hit_hero * 2 
                     total_damage = crit_hero + weapon_bonus
                     boss_hp -= total_damage
-                    print (f"{L50}\nВы нанесли критический удар! И снесли врагу {total_damage} хп.")
+                    print (f"{L58}\nВы нанесли критический удар! И снесли врагу {total_damage} хп.")
                     
                 else:
                     total_damage = hit_hero + weapon_bonus
                     boss_hp -= total_damage
                     print(f"Вы нанесли боссу {total_damage} урона")
-                    
-            
-                # --- Уклонение, атака босса --- # 
-                if boss_hp > 0:
-                    if hero['agility'] >= random.randint(1,100):
-                        print (f"Вы уклонились от атаки босса!\n{L50}")
-                    else:
-                        hero['health'] -= boss_hit
-
-                # --- Проверка смерти игрока --- # 
-                if hero['health'] <= 0:
-                    print(f"{L40}\nВы погибли. Ваши достижения не забудут.\n{L40}")
-                    if os.path.exists('save.json'):
-                        os.remove('save.json')
-                    exit()
-                    
-                # ---  Проверка смерти босса  --- # 
-                if boss_hp <= 0:                        
-                    hero['money'] += boss_money
-                    hero['stat_point'] += 1 
                 
-                    boss_drop = random.randint (1,100)
-                    # --- Расчёт редкости --- #    
-                    if boss_drop <= 10:
+                is_boss_dead, boss_hp = check_in_fight(hero, boss_hit, boss_hp, boss_money) 
+                if is_boss_dead: 
 
-                        if len(hero['inventory']) < MAX_SLOT:
-
-                            rare_w = 10 + (hero['luck'] * 0.2)
-                            epic_w = 1 + (hero['luck'] * 0.05)
-                            lega_w = 0.1 + (hero['luck'] * 0.01)
-                            mythic_w = 0.0001 + (hero['luck'] * 0.001)
-                            common_w = 100 - (rare_w + epic_w + lega_w + mythic_w)
-
-                            choise_random_rare = [common_items, rare_item, epic_item, legendary_item, mythic_item]
-                            chance_drop = [common_w, rare_w, epic_w, lega_w, mythic_w]
-                            result_drop = random.choices(choise_random_rare, weights = chance_drop)[0]
-                            spisok_predmetov = list(result_drop.keys())
-                            item = random.choice(spisok_predmetov)
-                            item_for_inventory = result_drop[item].copy()
-                            hero['inventory'].append(item_for_inventory)
-                            print (f"{L78}\nПоздравляю, босс убит, вы получили {boss_money} монет, а также 1 очко характеристик.\nТакже вы получили {item}\n{L78}")
-                        else: 
-                            print (f"{L78}\nПоздравляю, босс убит, вы получили {boss_money} монет, а также 1 очко характеристик.\nУ вас заполнен инвентарь, освободите место! (Макс 30)\n{L78}")
-                    else:
-                        print(f"{L78}\nПоздравляю, босс убит, вы получили {boss_money} монет, а также 1 очко характеристик.\n{L78}")
-                
                     # ---  Меню  --- # 
                     menu = input(f"Желаете продолжить? 1 - Да 2 - Нет.\nВаш выбор (1/2): ").lower().strip()
                     if menu == "нет" or menu == "no" or menu == "2":
-                        return hero  
+                        return hero 
+                    
+            # --- Побег --- #         
             elif choise == "2" or choise == "побег":
                 escape = random.randint(1,100)
                 if escape >= 30:    
-                    print(f"{L50}\nВы успешно сбежали!")
+                    print(f"{L58}\nВы успешно сбежали!")
                     break
                 else:
                     hero['health'] -= boss_hit
-                    print (f"{L50}\nБосс преградил вам дорогу, сбежать не удалось!\nПолучено {boss_hit} урона.\n{L50}")
+                    print (f"{L58}\nБосс преградил вам дорогу, сбежать не удалось!\nПолучено {boss_hit} урона.\n{L50}")
 
-            elif choise == "3" or choise == "выход":
-                print(f"{L50}\nВы успешно вышли!")
+            # --- Магия --- # 
+            elif choise == "3": 
+                spells_list = list(hero['spells'])
+                print("="*58)
+                for i, spell in enumerate (spells_list):
+                    print (f"{i + 1}. {spell} ({magic[spell]['mana_cost']} MP)")
+                choice_str = input(f"Выберите заклинание для атаки: ")
+                if choice_str.isdigit(): 
+                    choice = int(choice_str) - 1
+                    if 0 <= choice < len(spells_list):
+                        spell_choice = spells_list[choice]
+                        spell_choice = magic[spell_choice]
+                        time_spell = spell_choice.get('duration', 1)
+                        if hero['mana'] >= spell_choice['mana_cost']:
+                            hero['mana'] -= spell_choice['mana_cost']
+                            boss_hp -= spell_choice['damage']
+                            print("="*58)
+                            print(f"Вы использовали {spell_choice['name']} и нанесли {spell_choice['damage']} урона.")
+                            is_boss_dead, boss_hp = check_in_fight(hero, boss_hit, boss_hp, boss_money) 
+                            if is_boss_dead:
+
+                             # ---  Меню  --- # 
+                                menu = input(f"Желаете продолжить? 1 - Да 2 - Нет.\nВаш выбор (1/2): ").lower().strip()
+                                if menu == "нет" or menu == "no" or menu == "2":
+                                    return hero  
+                        else: 
+                            print(f"У вас недостаточно маны.")
+                    else: 
+                        print(f"Неверное заклинание, повторите попытку.")
+                else: 
+                    print(f'Выберите число.')
+
+            # --- Выход --- # 
+            elif choise == "4" or choise == "выход":
+                print(f"{L58}\nВы успешно вышли!")
                 return hero 
+                        
+                        
+
+                    
+
+                    
+                

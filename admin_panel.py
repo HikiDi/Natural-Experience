@@ -41,4 +41,6 @@ def admin_panel(hero):
             print (f"Вы успешно повысили удачу, теперь она составляет {hero['luck']}")
         elif choise == "weapon": 
             hero['inventory'].append(legendary_item['Экскалибур'].copy())
+        elif choise == "magic":
+            hero['spells'].add("Fireball")
     return hero

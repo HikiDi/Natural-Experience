@@ -1,4 +1,7 @@
 import random 
+
+# --- МОБЫ --- #
+
 bosses = { 
     "Орк": [30, 3, [8, 9], 1],
     "Гоблин": [12, 1, [1, 2], 0],
@@ -9,6 +12,9 @@ bosses = {
     "Зомби": [12, 3, [2, 3], 0],
     "Тень": [10, 2, [1, 2], 0]
 }
+
+# --- ПРЕДМЕТЫ/МАГИЯ --- # 
+
 common_items = {
     "Палка": {"name": "Палка", "dmg": 1, "type": "weapon", "disposition": "common", "sale": [0,"Ну и зачем мне этот мусор?"], "description": "Обычная палка, видимо, валялась где-то под деревом."},
     "Копьё каменное": {"name": "Копьё каменное", "dmg": 2, "type": "weapon", "disposition": "common", "sale": [2,"Неплохое копьё..."], "description": "Наконечник чуть притуплен, вот бы его заточить.."},
@@ -38,7 +44,30 @@ potion = {
     "2": {'name': "Зелье маны", "price": 20, "stat": "mana", "amount": 10, "stat_name": "ед. маны."},
     "2.1": {'name': "Большое зелье маны", "price": 30, "stat": "mana", "amount": 20, "stat_name": "ед. маны."}
 }
-characteristic_page1 =  {
+magic = {
+    "Fireball": {"name": "Огненный шар", "mana_cost": 20, "damage": 8, "type": "fire", "rarity": "basic"},
+    "Lightning": {"name": "Удар молнии", "mana_cost": 14, "damage": 5, "type": "electro", "rarity": "basic"},
+    "Poison": {"name": "Отравление", "mana_cost": 10, "damage": 2, "type": "poison", "rarity": "basic", "duration": 3},
+    "Water Splash": {"name": "Водяной всплеск", "mana_cost": 15, "damage": 8, "type": "water", "rarity": "basic"},
+    "Air Blade": {"name": "Ветрянной клинок", "mana_cost": 18, "damage": 7, "type": "air", "rarity": "basic"}
+}
+
+# --- ПРОЧЕЕ --- # 
+
+shop_price_tag_1 = {
+    "1": {"name": "Палка", "price": 3, "name_visual": "Палку", "rare": "common"},
+    "1.1": {"name": "Копьё каменное", "price": 6, "name_visual": "Копьё каменное", "rare": "common"},
+    "2": {"name": "Меч каменный", "price": 7, "name_visual": "Меч каменный", "rare": "common"},
+    "2.1": {"name": "Железный меч", "price": 15, "name_visual": "Железный меч", "rare": "rare"}
+}
+shop_price_tag_2 = {
+    "1": {"name": 'Книгу заклинаний "Огненный шар"', "price": 20, "id": "Fireball"},
+    "1.1": {"name": 'Книгу заклинаний "Удар молнии"', "price": 16, "id": "Lightning"},
+    "2": {"name": 'Книгу заклинаний "Отравление"', "price": 15, "id": "Poison"},
+    "2.1": {"name": 'Книгу заклинаний "Водяной всплеск"', "price": 20, "id": "Water Splash"}
+}
+
+characteristic_page1 = {
     "1": {"name": "улучшили урон", "type": {"min_damage": 1, "max_damage": 1}, "price": 1, "ch_name": "Ваш диапозон урона состовляет: {R}{B}{min_damage}-{max_damage}{S}."}, 
     "2": {"name": "улучшили здоровье", "type": {"max_health": 3}, "price": 1, "ch_name": "Ваше максимальное здоровье составляет: {G}{B}{max_health}{S}."}, 
     "3": {"name": "улучшили крит шанс", "type": {"crit_chance": 1.0}, "price": 1, "max_value": 100.0, "ch_name": "Ваш крит шанс составляет: {M}{B}{crit_chance}%{S}."}, 
@@ -47,4 +76,10 @@ characteristic_page2 = {
     "1": {"name": "улучшили ловкость", "type": {"agility": 1}, "price": 1, "ch_name": "Ваша максимальная ловкость составляет: {G}{B}{agility}{S}."}, 
     "2": {"name": "повысили объём маны", "type": {"max_mana": 10}, "price": 1, "ch_name": "Максимальное кол-во маны составляет: {G}{B}{max_mana}{S}."}, 
     "3": {"name": "улучшили удачу", "type": {"luck": 1}, "price": 1, "ch_name": "Ваша удача теперь: {G}{B}{luck}{S}."}, 
+}
+all_rarity = {
+    "common": common_items,
+    "rare": rare_item,
+    "epic": epic_item,
+    "legendary": legendary_item
 }
