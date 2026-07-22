@@ -1,0 +1,52 @@
+{
+    "hero": {
+        "health": 122,
+        "max_health": 125,
+        "money": 1023,
+        "stat_point": 101,
+        "crit_chance": 100.0,
+        "min_damage": 102,
+        "max_damage": 107,
+        "agility": 3,
+        "mana": 990,
+        "max_mana": 1030,
+        "luck": 100,
+        "name": "Игрок",
+        "inventory": [
+            {
+                "name": "Экскалибур",
+                "dmg": 10,
+                "type": "weapon",
+                "disposition": "common",
+                "ult": 0,
+                "sale": [
+                    50,
+                    "Вот это да, это же \"Экскалибур\"!"
+                ],
+                "description": "Легендарный меч, Богиня Сэлла даровала его Эларе, дабы победить в Великой Войне"
+            }
+        ],
+        "equipment": {
+            "weapon": null
+        },
+        "spells": [
+            "Fireball"
+        ]
+    },
+    "world_flag": {
+        "main_menu": {
+            "first_intro": false
+        },
+        "shop_menu": {
+            "first_dialog": true
+        }
+    },
+    "npc": {
+        "nps_seller": {
+            "Gil": {
+                "coefficient_sell": 1,
+                "coefficient_buy": 1
+            }
+        }
+    }
+}
